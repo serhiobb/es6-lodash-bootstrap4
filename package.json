@@ -33,7 +33,7 @@
     "webpack": "webpack -d --config webpack.config.js",
     "gh-pages": "gh-pages -d ./public -e .",
     "commit": "git add . && git commit -m 'npm commit' && git push -u origin master", 
-    "publish": "npm-run-all webpack gh-pages",
+    "publish": "npm-run-all webpack commit gh-pages",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sergey belous",
