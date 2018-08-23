@@ -24,9 +24,6 @@ let render = (selector, data) => {
     html = html + (template(tpl)(data));
     document.querySelector('#app').innerHTML += "render" + html;
 }
-let clear = () => {
-    
-}
  let images = [
      {src: "/img/small-ones/astronaut.jpg"},
      {src: "/img/small-ones/baseball.png"},
@@ -82,45 +79,86 @@ document.querySelectorAll('script.badge').forEach(function(el){
     let html = "<hr>" + (_.template(el.textContent)({}));
     document.querySelector('#app').innerHTML += html;
 })*/
- let setLinkActive = (href) => {
+let setLinkActive = (href) => {
      $('a.nav-link').removeClass('active');
      $('a.nav-link[href="' + href + '"]').addClass('active');
  }
+let t_transition_time = 300;
 let onShowBig = (event) => {
     $('#main_content > *').addClass('t_t');
-    window.requestAnimationFrame( () => {
-        $('#main_content > *').addClass('t');
-        setTimeout( () => {
-            $('#main_content > *').addClass('d-none');
+    $('#main_content > *').addClass('t');
+    setTimeout( () => {
+        $('#main_content > *').addClass('d-none');
 
-            setLinkActive('/#/big');    
-            let content = '<div class="row">' +
-                getTplList('script#big-one', images2)+
-                '</div>';
-            document.querySelector('#main_content').innerHTML += "render" + content;
-
-        }, 800);
-    })
-    
-    
+        setLinkActive('/#/big');    
+        let content = '<div class="row t_t t">' +
+            getTplList('script#big-one', images2)+
+            '</div>';
+        document.querySelector('#main_content').innerHTML = content;
+        console.log('inserted');
+        //$('#main_content > *').removeClass('t');
+        window.requestAnimationFrame(() => {
+            console.log('new frame rendered in dom');
+            window.requestAnimationFrame(() => {
+                console.log('new by');
+                $('#main_content > *').removeClass('t');
+            })
+        });
+        //     $('#main_content > *').removeClass('t');
+        //     console.log('class removed');
+            // setTimeout(() => {
+        //         console.log('shown');
+                
+            // }, 1800)
+        // })
+    }, t_transition_time);
 }
 
 let onShowSmall = (event) => {
-    clear();
-    setLinkActive('/#/small');
-    let content = '<div class="row">' +
-        getTplList('script#small-one', images) +
-        '</div>';
-    document.querySelector('#main_content').innerHTML += "render" + content;
+    $('#main_content > *').addClass('t_t');
+    $('#main_content > *').addClass('t');
+    setTimeout( () => {
+        
+        $('#main_content > *').addClass('d-none');
+
+        setLinkActive('/#/small');
+        let content = '<div class="row t_t t">' +
+            getTplList('script#small-one', images) +
+            '</div>';
+        document.querySelector('#main_content').innerHTML = "render" + content;
+        
+        console.log('inserted');
+        //$('#main_content > *').removeClass('t');
+        window.requestAnimationFrame(() => {
+            console.log('new frame rendered in dom');
+            window.requestAnimationFrame(() => {
+                console.log('new by');
+                window.requestAnimationFrame(() => {
+                    $('#main_content > *').removeClass('t');
+                });
+            })
+        });
+    }, t_transition_time);
 }
 
 let onShowBadges = (event) => {
-    clear();
-    setLinkActive('/#/badges');
-    document.querySelectorAll('script.badge').forEach(function(el){
-        let html = "<hr>" + (_.template(el.textContent)({}));
-        document.querySelector('#main_content').innerHTML += html;
-    })
+    $('#main_content > *').addClass('t_t');
+    $('#main_content > *').addClass('t');
+    setTimeout( () => {
+        setLinkActive('/#/badges');
+        document.querySelector('#main_content').innerHTML = "";
+        document.querySelectorAll('script.badge').forEach(function(el){
+            let html = '<div class="row t t_t">' + (_.template(el.textContent)({})) + '</div>';
+            document.querySelector('#main_content').innerHTML += html;
+            window.requestAnimationFrame(() => {
+                console.log('new frame rendered in dom');
+                window.requestAnimationFrame(() => {
+                    console.log('new by');
+                    $('#main_content > *').removeClass('t');
+                })
+            });
+        })
+    }, t_transition_time);
 }
 
 $('#app').delegate('a.nav-link[href="/#/big"]','click', onShowBig)
