@@ -7,6 +7,7 @@ templateSettings.interpolate = /\{\{([\s\S]+?)\}\}/g;
 templateSettings.evaluate = /\{%([\s\S]+?)%\}/g;
 
 window.$ = window.jQuery = jQuery;
+let app_selector = '#app';
 
 let getTplList = (selector, data) => {
     
@@ -19,11 +20,13 @@ let getTplList = (selector, data) => {
     return html;
 }
 
-let render = (selector, data) => {
+let render = (selector, data, area) => {
+    area = area || app_selector;
     let html = '', tpl = document.querySelector(selector).textContent;
     html = html + (template(tpl)(data));
-    document.querySelector('#app').innerHTML += "render" + html;
+    document.querySelector(area).innerHTML += "render" + html;
 }
+
  let images = [
      {src: "/img/small-ones/astronaut.jpg"},
      {src: "/img/small-ones/baseball.png"},
@@ -135,9 +138,16 @@ window.requestAnimationFrame(() => {
     }, t_transition_time);
 }
 
-$('#app').delegate('a.nav-link[href="/#/big"]','click', onShowBig)
-$('#app').delegate('a.nav-link[href="/#/small"]','click', onShowSmall)
-$('#app').delegate('a.nav-link[href="/#/badges"]','click', onShowBadges)
+let onShowCards = (event) => {
+   $('#main_content > *').addClass('d-none');
+    setLinkActive('/#/cards');
+    render('script#card-page', {}, '#main_content');
+}
+
+$(app_selector).delegate('a.nav-link[href="/#/big"]','click', onShowBig)
+$(app_selector).delegate('a.nav-link[href="/#/small"]','click', onShowSmall)
+$(app_selector).delegate('a.nav-link[href="/#/badges"]','click', onShowBadges)
+$(app_selector).delegate('a.nav-link[href="/#/cards"]','click', onShowCards)
 let runApp = () => {
     render('#layout', {
         menu: ['One', 'Two'],
@@ -148,6 +158,7 @@ let pushState = (event) => {
     if(window.location.hash === '#/big'){onShowBig(event)}
     else if(window.location.hash === '#/small'){onShowSmall(event)}
     else if(window.location.hash === '#/badges'){onShowBadges(event)}
+    else if(window.location.hash === '#/cards'){onShowCards(event)}
 }
 window.addEventListener("hashchange", pushState, false);
 document.addEventListener("DOMContentLoaded", runApp);
